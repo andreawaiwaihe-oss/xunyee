@@ -270,7 +270,7 @@ body {{
 }}
 
 .rank-card::after {{
-    content: "四唱一张奕然;
+    content: "四唱一张奕然";
     position: absolute;
     left: 50%;
     top: 50%;
@@ -282,12 +282,12 @@ body {{
     pointer-events: none;
     white-space: nowrap;
     z-index: 2;
-}
+}}
 
 .rank-card > * {{
     position: relative;
     z-index: 3;
-}
+}}
 .card-top {{
     display: flex;
     justify-content: space-between;
