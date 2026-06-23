@@ -270,7 +270,7 @@ body {{
 }}
 
 .rank-card::after {{
-    content: "数猪大队队长";
+    content: "四唱一张奕然";
     position: absolute;
     right: -10px;
     top: 45%;
