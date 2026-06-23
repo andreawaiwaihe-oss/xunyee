@@ -281,7 +281,7 @@ body {{
     color: rgba(98, 87, 216, 0.18);
     pointer-events: none;
     white-space: nowrap;
-    z-index: 2;
+    z-index: 20;
 }}
 
 .rank-card > * {{
