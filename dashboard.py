@@ -267,7 +267,7 @@ body {{
     border: 1px solid #eeeeF7;
     position: relative;
     overflow: hidden;
-}}
+}
 
 .rank-card::after {{
     content: "四唱一张奕然;
@@ -282,12 +282,12 @@ body {{
     pointer-events: none;
     white-space: nowrap;
     z-index: 2;
-}}
+}
 
 .rank-card > * {{
     position: relative;
     z-index: 3;
-}}
+}
 .card-top {{
     display: flex;
     justify-content: space-between;
