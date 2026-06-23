@@ -258,7 +258,7 @@ body {{
     color: #34344f;
 }}
 
-.rank-card {
+.rank-card {{
     background: rgba(255,255,255,0.98);
     border-radius: 24px;
     padding: 20px 20px 17px 20px;
@@ -267,9 +267,9 @@ body {{
     border: 1px solid #eeeeF7;
     position: relative;
     overflow: hidden;
-}
+}}
 
-.rank-card::after {
+.rank-card::after {{
     content: "数猪大队队长";
     position: absolute;
     right: -10px;
@@ -278,17 +278,16 @@ body {{
     font-size: 32px;
     font-weight: 900;
     letter-spacing: 2px;
-    color: rgba(98, 87, 216, 0.13);
+    color: rgba(98, 87, 216, 0.08);
     pointer-events: none;
     white-space: nowrap;
     z-index: 0;
-}
+}}
 
-.rank-card > * {
+.rank-card > * {{
     position: relative;
     z-index: 1;
-}
-
+}}
 .card-top {{
     display: flex;
     justify-content: space-between;
