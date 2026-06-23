@@ -263,22 +263,22 @@ body {{
     border-radius: 24px;
     padding: 20px 20px 17px 20px;
     margin-bottom: 17px;
-    box-shadow: 0 10px 26px rgba(86, 74, 140, 0.08);
+    box-shadow: 0 10px 26px rgba(86, 74, 140, 0.11);
     border: 1px solid #eeeeF7;
     position: relative;
     overflow: hidden;
 }}
 
 .rank-card::after {{
-    content: "四唱一张奕然";
+    content: "四唱一张奕然;
     position: absolute;
-    right: -10px;
-    top: 45%;
-    transform: rotate(-18deg);
-    font-size: 32px;
+    left: 50%;
+    top: 52%;
+    transform: translate(-50%, -50%) rotate(-18deg);
+    font-size: 24px;
     font-weight: 900;
     letter-spacing: 2px;
-    color: rgba(98, 87, 216, 0.08);
+    color: rgba(98, 87, 216, 0.075);
     pointer-events: none;
     white-space: nowrap;
     z-index: 0;
