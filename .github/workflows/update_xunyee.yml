@@ -1,21 +1,22 @@
 name: Update Xunyee CSV
 
 on:
-  schedule:
-    - cron: "*/5 * * * *"
-    # 中国时间 10:00
-    - cron: "0 2 * * *"
-
-    # 中国时间 12:00
-    - cron: "0 4 * * *"
-
-    # 中国时间 18:00
-    - cron: "0 10 * * *"
-
-    # 中国时间 23:59
-    - cron: "59 15 * * *"
-
   workflow_dispatch:
+  schedule:
+    # 临时测试：每 5 分钟跑一次
+    - cron: '*/5 * * * *'
+
+    # 中国时间 10:00 = UTC 02:00
+    - cron: '0 2 * * *'
+
+    # 中国时间 12:00 = UTC 04:00
+    - cron: '0 4 * * *'
+
+    # 中国时间 18:00 = UTC 10:00
+    - cron: '0 10 * * *'
+
+    # 中国时间 23:59 = UTC 15:59
+    - cron: '59 15 * * *'
 
 permissions:
   contents: write
@@ -31,7 +32,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: '3.11'
 
       - name: Install dependencies
         run: |
