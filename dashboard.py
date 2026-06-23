@@ -273,20 +273,20 @@ body {{
     content: "四唱一张奕然;
     position: absolute;
     left: 50%;
-    top: 52%;
+    top: 50%;
     transform: translate(-50%, -50%) rotate(-18deg);
-    font-size: 24px;
+    font-size: 30px;
     font-weight: 900;
     letter-spacing: 2px;
-    color: rgba(98, 87, 216, 0.075);
+    color: rgba(98, 87, 216, 0.18);
     pointer-events: none;
     white-space: nowrap;
-    z-index: 0;
+    z-index: 2;
 }}
 
 .rank-card > * {{
     position: relative;
-    z-index: 1;
+    z-index: 3;
 }}
 .card-top {{
     display: flex;
