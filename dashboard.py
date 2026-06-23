@@ -263,7 +263,7 @@ body {{
     border-radius: 24px;
     padding: 20px 20px 17px 20px;
     margin-bottom: 17px;
-    box-shadow: 0 10px 26px rgba(86, 74, 140, 0.11);
+    box-shadow: 0 10px 26px rgba(86, 74, 140, 0.08);
     border: 1px solid #eeeeF7;
     position: relative;
     overflow: hidden;
