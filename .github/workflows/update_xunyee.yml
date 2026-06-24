@@ -3,8 +3,7 @@ name: Update Xunyee CSV
 on:
   workflow_dispatch:
   schedule:
-    # 临时测试：每 5 分钟跑一次
-    - cron: '*/5 * * * *'
+    
 
     # 中国时间 10:00 = UTC 02:00
     - cron: '0 2 * * *'
