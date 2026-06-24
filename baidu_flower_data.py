@@ -14,7 +14,7 @@ from datetime import datetime, timezone, timedelta
 COOKIE = os.getenv("BAIDU_COOKIE")
 
 if not COOKIE:
-    raise ValueError("缺少 BAIDU_COOKIE，请在 GitHub Secrets 里设置")r
+    raise ValueError("缺少 BAIDU_COOKIE，请在 GitHub Secrets 里设置")
 # =========================
 # 2. 人员配置
 # baikeid 需要你从对应页面 url 里拿
