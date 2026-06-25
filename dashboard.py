@@ -208,9 +208,9 @@ def make_xunyee_card(row):
             </div>
 
             <div class="bar">
-                <div class="bar-3" style="width:{p3}%"></div>
-                <div class="bar-2" style="width:{p2}%"></div>
-                <div class="bar-1" style="width:{p1}%"></div>
+                <span><i class="dot green"></i>3次 {format_num(check3)}人</span>
+                <span><i class="dot blue"></i>2次 {format_num(check2)}人</span>
+                <span><i class="dot pink"></i>1次 {format_num(check1)}人</span>
             </div>
 
             <div class="bottom-row">
