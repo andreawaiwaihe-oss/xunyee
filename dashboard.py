@@ -183,6 +183,7 @@ def make_xunyee_card(row):
     elif rank != 1 and str(distance) not in ["", "nan", "None"]:
         distance_html = f'<span class="gap-pill">距上一名 {format_num(distance)}</span>'
 
+    domi_tag_html = '<span class="domi-inline-tag">四代唯一ACE</span>' if is_domi else ''
     return f"""
     <div class="{card_class}">
         <div class="card-watermark">张奕然四代唯一ACE</div>
@@ -192,6 +193,7 @@ def make_xunyee_card(row):
                     <span class="rank-badge">#{rank}</span>
                     <span class="medal">{medal_for(rank)}</span>
                     <span class="name">{name}</span>
+                    {domi_tag_html}
                 </div>
                 <div class="main-data">
                     <div class="main-number">{format_num(today_like)}</div>
@@ -299,6 +301,20 @@ body {
     margin: 0 auto;
     padding: 12px 10px 28px 10px;
 }
+.domi-inline-tag {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 8px;
+    padding: 4px 9px;
+    border-radius: 999px;
+    background: #FF952D;
+    color: white;
+    font-size: 12px;
+    font-weight: 900;
+    line-height: 1;
+    vertical-align: middle;
+    box-shadow: 0 4px 10px rgba(255, 149, 45, 0.22);
+}
 .header {
     display: flex;
     justify-content: space-between;
@@ -391,20 +407,6 @@ body {
     box-shadow: 0 10px 26px rgba(255, 149, 45, 0.18);
 }
 
-.domi-card::before {
-    content: "四代唯一ACE";
-    position: absolute;
-    left: 78px;
-    top: 82px;
-    background: #FF952D;
-    color: white;
-    font-size: 12px;
-    font-weight: 900;
-    padding: 4px 10px;
-    border-radius: 999px;
-    box-shadow: 0 4px 10px rgba(255, 149, 45, 0.22);
-    z-index: 30;
-}
 .card-watermark {
     position: absolute;
     left: 58%;
@@ -564,7 +566,11 @@ body {
         font-size: 22px; 
         line-height: 1.15;
     }
-
+    .domi-inline-tag {
+    font-size: 10px !important;
+    padding: 4px 7px !important;
+    margin-left: 6px !important;
+    }
     .compact-card {
         padding: 16px 14px !important;
         border-radius: 22px !important;
