@@ -55,8 +55,8 @@ jobs:
           if git diff --cached --quiet; then
             echo "No CSV changes to commit."
           else
-             git commit -m "Auto update Xunyee CSV"
+            git commit -m "Auto update Xunyee CSV"
 
-             git pull --rebase origin main
-              git push origin main
+            git pull --rebase origin main
+            git push origin main
           fi
