@@ -56,6 +56,7 @@ st.markdown(
 
 XUNYEE_CSV = Path("xunyee_like_fans_count.csv")
 BAIDU_CSV = Path("baidu_send_flower_data.csv")
+WEIBO_CSV = Path("weibo_chaohua_full.csv")
 
 
 def to_int(value):
@@ -755,8 +756,10 @@ def render_baidu_page():
     components.html(full_html, height=height, scrolling=True)
 
 
-tab1, tab2 = st.tabs(["🐷 寻艺点赞", "🌸 百度送花"])
+tab1, tab2, tab3 = st.tabs(["🐷 寻艺点赞", "🌸 百度送花", "🐷 微博超话"])
 with tab1:
     render_xunyee_page()
 with tab2:
     render_baidu_page()
+with tab3:
+    render_weibo_tab()
