@@ -394,15 +394,15 @@ body {
 .domi-card::before {
     content: "四代唯一ACE";
     position: absolute;
-    right: 130px;
-    top: 10px;
+    left: 78px;
+    top: 82px;
     background: #FF952D;
     color: white;
     font-size: 12px;
     font-weight: 900;
-    padding: 5px 10px;
+    padding: 4px 10px;
     border-radius: 999px;
-    box-shadow: 0 6px 14px rgba(255, 149, 45, 0.28);
+    box-shadow: 0 4px 10px rgba(255, 149, 45, 0.22);
     z-index: 30;
 }
 .card-watermark {
