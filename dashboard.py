@@ -4,8 +4,8 @@ import streamlit.components.v1 as components
 from pathlib import Path
 
 st.set_page_config(
-    page_title="🎀数据榜",
-    page_icon="💜",
+    page_title="Domi 数据榜",
+    page_icon="🐷",
     layout="centered",
 )
 
@@ -30,8 +30,8 @@ st.markdown(
     .stTabs [data-baseweb="tab-list"] {
         gap: 8px;
         justify-content: center;
-        background: #f7f5ff;
-        border: 1px solid #eeebff;
+        background: #fff3e5;
+        border: 1px solid #ffe1bd;
         padding: 6px;
         border-radius: 999px;
         width: fit-content;
@@ -41,13 +41,13 @@ st.markdown(
     .stTabs [data-baseweb="tab"] {
         border-radius: 999px;
         padding: 7px 16px;
-        color: #6257d8;
+        color: #ff952d;
         font-weight: 900;
     }
 
     .stTabs [aria-selected="true"] {
         background: white;
-        box-shadow: 0 5px 14px rgba(98, 87, 216, 0.12);
+        box-shadow: 0 5px 14px rgba(255, 149, 45, 0.18);
     }
     </style>
     """,
@@ -148,11 +148,11 @@ def normalize_baidu_df(df):
 
 def medal_for(rank):
     if rank == 1:
-        return "🥇"
+        return "👑🐷"
     if rank == 2:
-        return "🥈"
+        return "🔥🐷"
     if rank == 3:
-        return "🥉"
+        return "🧡🐷"
     return ""
 
 
@@ -172,13 +172,20 @@ def make_xunyee_card(row):
     p2 = check2 / total_people * 100
     p1 = check1 / total_people * 100
 
+    is_domi = str(name) == "张奕然"
+    card_class = "compact-card domi-card" if is_domi else "compact-card"
+
     distance_html = ""
-    if rank != 1 and str(distance) not in ["", "nan", "None"]:
+    if is_domi and rank == 1:
+        distance_html = '<span class="gap-pill domi-pill">👑🐷 守护 Domi 的大白菜！</span>'
+    elif is_domi and str(distance) not in ["", "nan", "None"]:
+        distance_html = f'<span class="gap-pill hot-pill">还差 {format_num(distance)} 点赞铲倒前方大白菜 🐷</span>'
+    elif rank != 1 and str(distance) not in ["", "nan", "None"]:
         distance_html = f'<span class="gap-pill">距上一名 {format_num(distance)}</span>'
 
     return f"""
-    <div class="compact-card">
-        <div class="card-watermark">四唱一张奕然</div>
+    <div class="{card_class}">
+        <div class="card-watermark">Domi 🧡 四唱一张奕然 🐷</div>
         <div class="card-content">
             <div class="top-line">
                 <div class="identity">
@@ -225,8 +232,15 @@ def make_baidu_card(row):
     level = row["等级"]
     distance = row["距上一名"]
 
+    is_domi = str(name) == "张奕然"
+    card_class = "compact-card flower-card domi-card" if is_domi else "compact-card flower-card"
+
     distance_html = ""
-    if rank != 1 and str(distance) not in ["", "nan", "None"]:
+    if is_domi and rank == 1:
+        distance_html = '<span class="gap-pill domi-pill">👑🐷 Domi 花田第一，继续守住！</span>'
+    elif is_domi and str(distance) not in ["", "nan", "None"]:
+        distance_html = f'<span class="gap-pill hot-pill">还差 {format_num(distance)} 朵花追上前方 🐷</span>'
+    elif rank != 1 and str(distance) not in ["", "nan", "None"]:
         distance_html = f'<span class="gap-pill">距上一名 {format_num(distance)}</span>'
 
     level_html = ""
@@ -234,8 +248,8 @@ def make_baidu_card(row):
         level_html = f'<span class="level-badge">{level}</span>'
 
     return f"""
-    <div class="compact-card flower-card">
-        <div class="card-watermark">四唱一张奕然</div>
+    <div class="{card_class}">
+        <div class="card-watermark">Domi 🧡 四唱一张奕然 🐷</div>
         <div class="card-content">
             <div class="top-line">
                 <div class="identity">
@@ -276,9 +290,9 @@ COMMON_STYLE = """
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
 body {
-    background: linear-gradient(180deg, #f6f3ff 0%, #ffffff 64%);
+    background: linear-gradient(180deg, #fff3e5 0%, #fffaf4 42%, #ffffff 100%);
     font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
-    color: #23233f;
+    color: #2b2118;
 }
 .page {
     max-width: 620px;
@@ -303,7 +317,7 @@ body {
     font-size: 28px;
     font-weight: 950;
     letter-spacing: -0.6px;
-    color: #23233f;
+    color: #2b2118;
     line-height: 1.1;
 }
 .status-dot {
@@ -319,7 +333,7 @@ body {
     font-weight: 800;
 }
 .sub-title {
-    color: #9a99ad;
+    color: #a8784d;
     font-size: 12px;
     margin-top: 5px;
 }
@@ -333,7 +347,7 @@ body {
 }
 .update-time b {
     display: block;
-    color: #34344f;
+    color: #2d251f;
     font-size: 12px;
 }
 .mini-bar {
@@ -344,19 +358,19 @@ body {
 }
 .mini-box {
     background: rgba(255,255,255,0.92);
-    border: 1px solid #efecff;
+    border: 1px solid #ffe1bd;
     border-radius: 16px;
     padding: 9px 10px;
-    box-shadow: 0 6px 18px rgba(86, 74, 140, 0.06);
+    box-shadow: 0 6px 18px rgba(255, 149, 45, 0.08);
 }
 .mini-label {
-    color: #9a99ad;
+    color: #a8784d;
     font-size: 11px;
     font-weight: 800;
     margin-bottom: 2px;
 }
 .mini-value {
-    color: #34344f;
+    color: #2d251f;
     font-size: 17px;
     font-weight: 950;
     line-height: 1.1;
@@ -365,11 +379,16 @@ body {
     position: relative;
     overflow: hidden;
     background: rgba(255,255,255,0.98);
-    border: 1px solid #eeebfb;
+    border: 1px solid #ffe2bf;
     border-radius: 20px;
     padding: 13px 14px 12px 14px;
     margin-bottom: 10px;
-    box-shadow: 0 8px 22px rgba(86, 74, 140, 0.10);
+    box-shadow: 0 8px 22px rgba(255, 149, 45, 0.12);
+}
+.domi-card {
+    border: 1px solid rgba(255, 149, 45, 0.55);
+    background: linear-gradient(135deg, #ffffff 0%, #fff7ec 100%);
+    box-shadow: 0 10px 26px rgba(255, 149, 45, 0.18);
 }
 .card-watermark {
     position: absolute;
@@ -379,7 +398,7 @@ body {
     font-size: 26px;
     font-weight: 950;
     letter-spacing: 2px;
-    color: rgba(98, 87, 216, 0.08);
+    color: rgba(255, 149, 45, 0.06);
     pointer-events: none;
     white-space: nowrap;
     z-index: 4;
@@ -403,8 +422,8 @@ body {
     flex-wrap: wrap;
 }
 .rank-badge {
-    background: #f0edff;
-    color: #6557e8;
+    background: #fff0dc;
+    color: #ff952d;
     border-radius: 9px;
     padding: 4px 8px;
     font-weight: 950;
@@ -414,12 +433,12 @@ body {
 .name {
     font-size: 23px;
     font-weight: 950;
-    color: #22243a;
+    color: #2b2118;
     line-height: 1.1;
 }
 .level-badge {
-    background: #fff0f4;
-    color: #df3360;
+    background: linear-gradient(135deg, #ff952d, #ff6a00);
+    color: white;
     border-radius: 999px;
     padding: 3px 8px;
     font-size: 11px;
@@ -429,25 +448,35 @@ body {
 .main-number {
     font-size: 34px;
     font-weight: 950;
-    color: #6257d8;
+    color: #ff952d;
     line-height: 0.95;
     letter-spacing: -0.8px;
 }
 .main-label {
     margin-top: 4px;
     font-size: 11px;
-    color: #9b9ab0;
+    color: #a8784d;
     font-weight: 850;
 }
 .gap-row { min-height: 22px; margin-top: 3px; }
 .gap-pill {
     display: inline-block;
-    background: #fff0f4;
-    color: #df3360;
+    background: linear-gradient(135deg, #ff952d, #ff6a00);
+    color: white;
     border-radius: 999px;
     padding: 4px 9px;
     font-size: 12px;
     font-weight: 950;
+}
+.hot-pill {
+    background: linear-gradient(135deg, #ff952d, #ff6a00);
+    color: white;
+    box-shadow: 0 5px 14px rgba(255, 106, 0, 0.18);
+}
+.domi-pill {
+    background: #fff0dc;
+    color: #ff6a00;
+    border: 1px solid #ffd0a1;
 }
 .mini-stats {
     display: grid;
@@ -457,8 +486,8 @@ body {
 }
 .mini-stats.two { grid-template-columns: repeat(2, 1fr); }
 .mini-stats span {
-    background: #fbfaff;
-    border: 1px solid #f0eefb;
+    background: #fffaf4;
+    border: 1px solid #ffe8cd;
     border-radius: 12px;
     padding: 7px 8px;
     color: #8d8ba5;
@@ -466,7 +495,7 @@ body {
     font-weight: 850;
 }
 .mini-stats b {
-    color: #34344f;
+    color: #2d251f;
     font-size: 15px;
     font-weight: 950;
     margin-left: 3px;
@@ -477,18 +506,18 @@ body {
     border-radius: 999px;
     overflow: hidden;
     margin-top: 10px;
-    background: #eeeef6;
+    background: #ffe8cd;
 }
-.bar-3 { background: #23cfa4; }
-.bar-2 { background: #7b8cff; }
-.bar-1 { background: #ff6f91; }
+.bar-3 { background: #ffb84d; }
+.bar-2 { background: #ff952d; }
+.bar-1 { background: #ff6a00; }
 .single-bar-fill {
     width: 100%;
-    background: linear-gradient(90deg, #ff6f91 0%, #6257d8 100%);
+    background: linear-gradient(90deg, #ffb84d 0%, #ff952d 45%, #ff6a00 100%);
 }
 .bottom-row {
     margin-top: 8px;
-    color: #85849a;
+    color: #9a704c;
     font-size: 11px;
     display: flex;
     justify-content: space-between;
@@ -503,12 +532,12 @@ body {
     display: inline-block;
     margin-right: 4px;
 }
-.green { background: #23cfa4; }
-.blue { background: #7b8cff; }
-.pink { background: #ff6f91; }
+.green { background: #ffb84d; }
+.blue { background: #ff952d; }
+.pink { background: #ff6a00; }
 .footer {
     text-align: center;
-    color: #aaa9bc;
+    color: #b58b68;
     font-size: 11px;
     margin-top: 16px;
     padding-bottom: 14px;
@@ -593,9 +622,9 @@ def render_xunyee_page():
 
     cards_html = "".join(make_xunyee_card(row) for _, row in df.iterrows())
     full_html = build_page(
-        title="寻艺点赞榜",
-        subtitle="自动更新 · 紧凑看板版",
-        status_text="整点更新",
+        title="Domi 寻艺点赞榜 🐷",
+        subtitle="Domi 正在努力数数中 · 整点更新版",
+        status_text="整点更新 🐷",
         last_update=last_update,
         mini_items=[
             ("当前人数", format_num(total_people)),
@@ -623,9 +652,9 @@ def render_baidu_page():
 
     cards_html = "".join(make_baidu_card(row) for _, row in df.iterrows())
     full_html = build_page(
-        title="百度送花榜",
-        subtitle="自动更新 · 紧凑看板版",
-        status_text="整点更新",
+        title="Domi 百度送花榜 🌸",
+        subtitle="Domi 正在努力数花花 · 整点更新版",
+        status_text="整点更新 🐷",
         last_update=last_update,
         mini_items=[
             ("当前人数", format_num(total_people)),
@@ -639,7 +668,7 @@ def render_baidu_page():
     components.html(full_html, height=height, scrolling=True)
 
 
-tab1, tab2 = st.tabs(["💜 寻艺点赞", "🌸 百度送花"])
+tab1, tab2 = st.tabs(["🐷 寻艺点赞", "🌸 百度送花"])
 with tab1:
     render_xunyee_page()
 with tab2:
