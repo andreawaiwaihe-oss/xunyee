@@ -386,9 +386,9 @@ body {
     box-shadow: 0 12px 28px rgba(255, 149, 45, 0.12);
 }
 .domi-card {
-    border: 2px solid #FF952D !important;
+    border: 1.5px solid #FF952D !important;
     background: linear-gradient(135deg, #ffffff 0%, #FFF1DE 100%)!important;
-    box-shadow: 0 10px 26px rgba(255, 149, 45, 0.28);
+    box-shadow: 0 10px 26px rgba(255, 149, 45, 0.18);
 }
 
 .domi-card::before {
@@ -558,19 +558,85 @@ body {
     padding-bottom: 14px;
 }
 @media (max-width: 430px) {
-    .page { padding: 10px 8px 24px 8px; }
-    .title { font-size: 25px; }
-    .name { font-size: 21px; }
-    .main-number { font-size: 30px; }
-    .main-data { min-width: 96px; }
-    .mini-bar { gap: 6px; }
-    .mini-box { padding: 8px 8px; }
-    .mini-value { font-size: 15px; }
-    .mini-stats { gap: 6px; }
-    .mini-stats span { padding: 6px 6px; }
-    .mini-stats b { display: block; margin-left: 0; margin-top: 1px; }
-    .card-watermark { font-size: 22px; left: 56%; }
-}
+    .page { padding: 8px 6px 24px 6px; }
+
+    .title { 
+        font-size: 22px; 
+        line-height: 1.15;
+    }
+
+    .compact-card {
+        padding: 16px 14px !important;
+        border-radius: 22px !important;
+        margin-bottom: 14px !important;
+    }
+
+    .name { 
+        font-size: 24px; 
+        max-width: 145px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .main-number { 
+        font-size: 36px; 
+        line-height: 1;
+    }
+
+    .main-data { 
+        min-width: 92px; 
+    }
+
+    .mini-bar { gap: 7px; }
+
+    .mini-box { 
+        padding: 9px 9px; 
+        border-radius: 13px;
+    }
+
+    .mini-label {
+        font-size: 12px;
+    }
+
+    .mini-value { 
+        font-size: 19px; 
+    }
+
+    .mini-stats { 
+        gap: 6px; 
+    }
+
+    .mini-stats span { 
+        padding: 6px 6px; 
+        font-size: 12px;
+    }
+
+    .mini-stats b { 
+        display: block; 
+        margin-left: 0; 
+        margin-top: 1px; 
+    }
+
+    .gap-pill {
+        font-size: 13px !important;
+        padding: 6px 11px !important;
+        max-width: 100%;
+        white-space: normal;
+    }
+
+    .card-watermark { 
+        font-size: 20px; 
+        left: 55%; 
+        top: 40%;
+    }
+
+    .domi-card::before {
+        right: 12px;
+        top: 10px;
+        font-size: 10px;
+        padding: 4px 8px;
+    }
 </style>
 """
 
