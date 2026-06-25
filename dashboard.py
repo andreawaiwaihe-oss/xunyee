@@ -395,7 +395,7 @@ body {
     left: 58%;
     top: 38%;
     transform: translate(-50%, -50%) rotate(-18deg);
-    font-size: 26px;
+    font-size: 20px;
     font-weight: 950;
     letter-spacing: 2px;
     color: rgba(255, 149, 45, 0.20);
