@@ -761,5 +761,4 @@ with tab1:
     render_xunyee_page()
 with tab2:
     render_baidu_page()
-with tab3:
-    render_weibo_tab()
+
