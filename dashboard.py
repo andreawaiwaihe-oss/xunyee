@@ -394,7 +394,7 @@ body {
 .domi-card::before {
     content: "四代唯一ACE";
     position: absolute;
-    right: 160px;
+    right: 130px;
     top: 10px;
     background: #FF952D;
     color: white;
