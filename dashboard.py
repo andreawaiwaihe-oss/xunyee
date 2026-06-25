@@ -185,7 +185,7 @@ def make_xunyee_card(row):
 
     return f"""
     <div class="{card_class}">
-        <div class="card-watermark">Domi 🧡 四唱一张奕然 🐷</div>
+        <div class="card-watermark">Domi 🧡 张奕然四代唯一ACE 🐷</div>
         <div class="card-content">
             <div class="top-line">
                 <div class="identity">
@@ -398,7 +398,7 @@ body {
     font-size: 26px;
     font-weight: 950;
     letter-spacing: 2px;
-    color: rgba(255, 149, 45, 0.06);
+    color: rgba(255, 149, 45, 0.20);
     pointer-events: none;
     white-space: nowrap;
     z-index: 4;
