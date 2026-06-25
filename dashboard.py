@@ -393,7 +393,7 @@ body {
 .card-watermark {
     position: absolute;
     left: 58%;
-    top: 53%;
+    top: 38%;
     transform: translate(-50%, -50%) rotate(-18deg);
     font-size: 26px;
     font-weight: 950;
