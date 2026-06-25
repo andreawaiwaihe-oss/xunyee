@@ -392,9 +392,9 @@ body {
 }
 
 .domi-card::before {
-    content: "丝带唯一ACE";
+    content: "四代唯一ACE";
     position: absolute;
-    right: 16px;
+    right: 10px;
     top: 10px;
     background: #FF952D;
     color: white;
