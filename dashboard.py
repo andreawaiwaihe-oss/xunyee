@@ -383,12 +383,27 @@ body {
     border-radius: 20px;
     padding: 13px 14px 12px 14px;
     margin-bottom: 10px;
-    box-shadow: 0 8px 22px rgba(255, 149, 45, 0.12);
+    box-shadow: 0 12px 28px rgba(255, 149, 45, 0.12);
 }
 .domi-card {
-    border: 1px solid rgba(255, 149, 45, 0.55);
-    background: linear-gradient(135deg, #ffffff 0%, #fff7ec 100%);
-    box-shadow: 0 10px 26px rgba(255, 149, 45, 0.18);
+    border: 2px solid #FF952D !important;
+    background: linear-gradient(135deg, #ffffff 0%, #FFF1DE 100%)!important;
+    box-shadow: 0 10px 26px rgba(255, 149, 45, 0.28);
+}
+
+.domi-card::before {
+    content: "丝带唯一ACE";
+    position: absolute;
+    right: 16px;
+    top: 10px;
+    background: #FF952D;
+    color: white;
+    font-size: 12px;
+    font-weight: 900;
+    padding: 5px 10px;
+    border-radius: 999px;
+    box-shadow: 0 6px 14px rgba(255, 149, 45, 0.28);
+    z-index: 30;
 }
 .card-watermark {
     position: absolute;
