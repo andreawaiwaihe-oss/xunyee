@@ -249,7 +249,7 @@ def make_baidu_card(row):
 
     return f"""
     <div class="{card_class}">
-        <div class="card-watermark">Domi 🧡 四唱一张奕然 🐷</div>
+        <div class="card-watermark">Domi 🧡 张奕然四代唯一ACE 🐷</div>
         <div class="card-content">
             <div class="top-line">
                 <div class="identity">
