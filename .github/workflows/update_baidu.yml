@@ -55,5 +55,6 @@ jobs:
             echo "No CSV changes to commit."
           else
             git commit -m "Auto update Baidu flower CSV"
-            git push
+            git pull --rebase origin main
+            git push origin main
           fi
