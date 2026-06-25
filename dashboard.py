@@ -148,11 +148,11 @@ def normalize_baidu_df(df):
 
 def medal_for(rank):
     if rank == 1:
-        return "👑🐷"
+        return "🏅"
     if rank == 2:
-        return "🔥🐷"
+        return "🥈"
     if rank == 3:
-        return "🧡🐷"
+        return "🥉"
     return ""
 
 
