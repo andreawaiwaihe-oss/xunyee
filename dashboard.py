@@ -812,7 +812,7 @@ def render_weibo_tab():
         unsafe_allow_html=True,
     )
 
-        for _, row in df.iterrows():
+    for _, row in df.iterrows():
         rank = row.get("排名", "")
         name = row.get("艺人姓名", row.get("姓名", ""))
         chaolike = row.get("超Like", "")
