@@ -755,10 +755,97 @@ def render_baidu_page():
     height = max(900, 160 + len(df) * 150)
     components.html(full_html, height=height, scrolling=True)
 
+def render_weibo_tab():
+    if not WEIBO_CSV.exists():
+        st.markdown(
+            """
+            <div style="
+                max-width: 620px;
+                margin: 20px auto;
+                background: linear-gradient(135deg, #FFF4E6, #FFFFFF);
+                border: 1px solid rgba(255,149,45,0.30);
+                border-radius: 22px;
+                padding: 22px 24px;
+                box-shadow: 0 8px 24px rgba(255,149,45,0.10);
+            ">
+                <div style="font-size: 26px; font-weight: 900; color: #2d241f;">
+                    🐷 微博超话数据
+                </div>
+                <div style="font-size: 14px; color: #b06a25; margin-top: 8px; line-height: 1.7;">
+                    微博数据暂未接入。微博 token 比较容易过期，之后会展示最近一次成功抓取的数据。
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+        return
+
+    try:
+        df = pd.read_csv(WEIBO_CSV)
+    except Exception as e:
+        st.error("微博数据读取失败")
+        st.caption(str(e))
+        return
+
+    if df.empty:
+        st.warning("微博超话数据为空，可能是 token 已过期。")
+        return
+
+    update_time = ""
+    if "抓取时间" in df.columns:
+        valid_times = df["抓取时间"].dropna()
+        if not valid_times.empty:
+            update_time = str(valid_times.iloc[0])
+
+    st.markdown(
+        f"""
+        <div style="
+            max-width: 620px;
+            margin: 16px auto 14px auto;
+            background: linear-gradient(135deg, #FFF4E6, #FFFFFF);
+            border: 1px solid rgba(255,149,45,0.30);
+            border-radius: 22px;
+            padding: 18px 22px;
+            box-shadow: 0 8px 24px rgba(255,149,45,0.10);
+        ">
+            <div style="font-size: 26px; font-weight: 900; color: #2d241f;">
+                🐷 微博超话数据
+            </div>
+            <div style="font-size: 13px; color: #b06a25; margin-top: 5px;">
+                展示最近一次成功抓取结果。微博 token 过期时，不影响寻艺和百度数据。
+            </div>
+            <div style="font-size: 12px; color: #8a6b55; margin-top: 8px;">
+                上次成功更新：{update_time if update_time else "未知"}
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    show_cols = [
+        c for c in [
+            "排名",
+            "艺人姓名",
+            "姓名",
+            "超Like",
+            "今日签到",
+            "日新帖",
+            "抓取时间",
+            "错误信息",
+        ]
+        if c in df.columns
+    ]
+
+    if show_cols:
+        st.dataframe(df[show_cols], use_container_width=True, hide_index=True)
+    else:
+        st.dataframe(df, use_container_width=True, hide_index=True)
+
 
 tab1, tab2, tab3 = st.tabs(["🐷 寻艺点赞", "🌸 百度送花", "🐷 微博超话"])
 with tab1:
     render_xunyee_page()
 with tab2:
     render_baidu_page()
-
+with tab3:
+    render_weibo_tab()
