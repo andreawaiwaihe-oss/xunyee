@@ -68,14 +68,13 @@ TIMELINE_URL = "https://api.weibo.cn/2/statuses/container_timeline_topicpage"
 
 COMMON_HEADERS = {
     "Host": "api.weibo.cn",
-    "Content-Type": "application/x-www-form-urlencoded; charset=utf-8",
     "snrt": "normal",
     "authorization": AUTHORIZATION,
     "x-sessionid": X_SESSIONID,
     "x-engine-type": "cronet-114.0.5735.246",
     "x-shanhai-pass": X_SHANHAI_PASS,
-    "user-agent": "Weibo/99891 (iPhone; iOS 18.7.8; Scale/3.00)",
-    "x-log-uid": "4076053770",
+    "user-agent": "Weibo/100170 (iPhone; iOS 18.7.8; Scale/3.00)",
+    "x-log-uid": "5603091503",
     "x-validator": X_VALIDATOR,
     "x-log-level": "sla",
     "accept": "*/*",
