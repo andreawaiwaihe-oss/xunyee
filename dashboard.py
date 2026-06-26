@@ -1,6 +1,7 @@
 import pandas as pd
 import streamlit as st
 import streamlit.components.v1 as components
+from textwrap import dedent
 from pathlib import Path
 
 st.set_page_config(
@@ -793,7 +794,7 @@ def render_weibo_tab():
             update_time = str(valid_times.iloc[0])
 
     st.markdown(
-        f"""
+        dedent(f"""
         <div class="section-header">
             <div>
                 <div class="section-title">🐷 微博超话数据</div>
@@ -829,7 +830,7 @@ def render_weibo_tab():
             """
 
         st.markdown(
-            f"""
+            dedent(f"""
             <div class="rank-card">
                 <div class="card-watermark">张奕然四代唯一ACE</div>
 
@@ -838,41 +839,41 @@ def render_weibo_tab():
                         <div class="identity">
                             <span class="rank-badge">#{rank}</span>
                             <span class="name">{name}</span>
-                        </div>
+                </div>
 
-                        <div class="score-box">
-                            <div class="score">{format_num(chaolike)}</div>
-                            <div class="score-label">超Like</div>
-                        </div>
-                    </div>
-
-                    <div class="metric-row">
-                        <div class="metric-box">
-                            <div class="metric-label">今日签到</div>
-                            <div class="metric-value">{format_num(checkin)}</div>
-                        </div>
-                        <div class="metric-box">
-                            <div class="metric-label">日新帖</div>
-                            <div class="metric-value">{format_num(posts)}</div>
-                        </div>
-                    </div>
-
-                    <div class="bar-bg">
-                        <div class="bar-fill" style="width: 100%;"></div>
-                    </div>
-
-                    <div class="bottom-row">
-                        <span><i class="dot dot-3"></i>排名 #{rank}</span>
-                        <span><i class="dot dot-2"></i>签到 {format_num(checkin)}</span>
-                        <span><i class="dot dot-1"></i>新帖 {format_num(posts)}</span>
-                    </div>
-
-                    {error_text}
+                <div class="score-box">
+                    <div class="score">{format_num(chaolike)}</div>
+                    <div class="score-label">超Like</div>
                 </div>
             </div>
-            """,
-            unsafe_allow_html=True,
-        )
+
+            <div class="metric-row">
+                <div class="metric-box">
+                    <div class="metric-label">今日签到</div>
+                    <div class="metric-value">{format_num(checkin)}</div>
+                </div>
+                <div class="metric-box">
+                    <div class="metric-label">日新帖</div>
+                    <div class="metric-value">{format_num(posts)}</div>
+                </div>
+            </div>
+
+            <div class="bar-bg">
+                <div class="bar-fill" style="width: 100%;"></div>
+            </div>
+
+            <div class="bottom-row">
+                <span><i class="dot dot-3"></i>排名 #{rank}</span>
+                <span><i class="dot dot-2"></i>签到 {format_num(checkin)}</span>
+                <span><i class="dot dot-1"></i>新帖 {format_num(posts)}</span>
+            </div>
+
+            {error_text}
+        </div>
+    </div>
+    """),
+    unsafe_allow_html=True,
+)
 
     st.markdown(
         """
