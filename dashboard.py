@@ -148,6 +148,30 @@ def normalize_baidu_df(df):
     return output
 
 
+def normalize_weibo_df(df):
+    col_name = get_col(df, ["艺人姓名", "姓名", "超话名称", "name"])
+    col_rank = get_col(df, ["排名", "rank"])
+    col_chaolike = get_col(df, ["超Like", "超like", "超LIKE", "chaolike"])
+    col_checkin = get_col(df, ["今日签到", "签到", "checkin"])
+    col_posts = get_col(df, ["日新帖", "新帖", "posts"])
+    col_time = get_col(df, ["抓取时间", "更新时间", "update_time"])
+    col_error = get_col(df, ["错误信息", "error"])
+
+    output = pd.DataFrame()
+    output["姓名"] = df[col_name] if col_name else ""
+    output["排名"] = df[col_rank] if col_rank else ""
+    output["超Like"] = df[col_chaolike] if col_chaolike else 0
+    output["今日签到"] = df[col_checkin] if col_checkin else 0
+    output["日新帖"] = df[col_posts] if col_posts else 0
+    output["抓取时间"] = df[col_time] if col_time else ""
+    output["错误信息"] = df[col_error] if col_error else ""
+
+    output["超Like_num"] = output["超Like"].apply(to_int)
+    output = output.sort_values("超Like_num", ascending=False).reset_index(drop=True)
+    output["排名"] = output.index + 1
+    return output
+
+
 def medal_for(rank):
     if rank == 1:
         return "🏅"
@@ -283,6 +307,61 @@ def make_baidu_card(row):
                 <span><i class="dot pink"></i>排名 #{rank}</span>
                 <span><i class="dot green"></i>送花 {format_num(today_gift)}</span>
                 <span><i class="dot blue"></i>人数 {format_num(flower_users)}</span>
+            </div>
+        </div>
+    </div>
+    """
+
+
+def make_weibo_card(row):
+    rank = int(row["排名"])
+    name = row["姓名"]
+    chaolike = to_int(row["超Like"])
+    checkin = to_int(row["今日签到"])
+    posts = to_int(row["日新帖"])
+    error = row["错误信息"]
+
+    is_domi = str(name) == "张奕然"
+    card_class = "compact-card weibo-card domi-card" if is_domi else "compact-card weibo-card"
+
+    error_html = ""
+    if str(error).strip() not in ["", "nan", "None"]:
+        error_html = f'<span class="gap-pill hot-pill">⚠️ {error}</span>'
+
+    domi_tag_html = '<span class="domi-inline-tag">四代唯一ACE</span>' if is_domi else ""
+
+    return f"""
+    <div class="{card_class}">
+        <div class="card-watermark">张奕然四代唯一ACE</div>
+        <div class="card-content">
+            <div class="top-line">
+                <div class="identity">
+                    <span class="rank-badge">#{rank}</span>
+                    <span class="medal">{medal_for(rank)}</span>
+                    <span class="name">{name}</span>
+                    {domi_tag_html}
+                </div>
+                <div class="main-data">
+                    <div class="main-number">{format_num(chaolike)}</div>
+                    <div class="main-label">超Like</div>
+                </div>
+            </div>
+
+            <div class="gap-row">{error_html}</div>
+
+            <div class="mini-stats two">
+                <span>今日签到 <b>{format_num(checkin)}</b></span>
+                <span>日新帖 <b>{format_num(posts)}</b></span>
+            </div>
+
+            <div class="single-bar">
+                <div class="single-bar-fill"></div>
+            </div>
+
+            <div class="bottom-row">
+                <span><i class="dot pink"></i>排名 #{rank}</span>
+                <span><i class="dot green"></i>签到 {format_num(checkin)}</span>
+                <span><i class="dot blue"></i>新帖 {format_num(posts)}</span>
             </div>
         </div>
     </div>
@@ -762,120 +841,71 @@ def render_baidu_page():
     height = max(900, 160 + len(df) * 150)
     components.html(full_html, height=height, scrolling=True)
 
+
 def render_weibo_tab():
     if not WEIBO_CSV.exists():
-        html = """
-<div class="section-header">
-    <div>
-        <div class="section-title">🐷 微博超话数据</div>
-        <div class="section-subtitle">
-            微博数据暂未接入。微博 token 比较容易过期，之后会展示最近一次成功抓取的数据。
-        </div>
-    </div>
-    <div class="update-time">暂无数据</div>
-</div>
-"""
-        st.markdown(html, unsafe_allow_html=True)
+        full_html = build_page(
+            title="Domi 微博超话榜 🐷",
+            subtitle="微博数据暂未接入 · token 比较容易过期",
+            status_text="等待数据 🐷",
+            last_update="暂无",
+            mini_items=[
+                ("当前人数", "0"),
+                ("最高超Like", "0"),
+                ("总超Like", "0"),
+            ],
+            cards_html="",
+            footer_text="微博数据暂未接入，之后会展示最近一次成功抓取结果",
+        )
+        components.html(full_html, height=700, scrolling=True)
         return
 
     try:
-        df = pd.read_csv(WEIBO_CSV)
+        df_raw = pd.read_csv(WEIBO_CSV)
     except Exception as e:
         st.error("微博数据读取失败")
         st.caption(str(e))
         return
 
-    if df.empty:
-        st.warning("微博超话数据为空，可能是 token 已过期。")
+    if df_raw.empty:
+        full_html = build_page(
+            title="Domi 微博超话榜 🐷",
+            subtitle="微博数据为空 · 可能是 token 已过期",
+            status_text="等待更新 🐷",
+            last_update="未知",
+            mini_items=[
+                ("当前人数", "0"),
+                ("最高超Like", "0"),
+                ("总超Like", "0"),
+            ],
+            cards_html="",
+            footer_text="微博数据为空，保留其他榜单正常展示",
+        )
+        components.html(full_html, height=700, scrolling=True)
         return
 
-    update_time = ""
-    if "抓取时间" in df.columns:
-        valid_times = df["抓取时间"].dropna()
-        if not valid_times.empty:
-            update_time = str(valid_times.iloc[0])
+    df = normalize_weibo_df(df_raw)
+    last_update = str(df["抓取时间"].iloc[0]) if len(df) > 0 else ""
+    top_chaolike = df["超Like_num"].max() if len(df) > 0 else 0
+    total_people = len(df)
+    total_chaolike = df["超Like"].apply(to_int).sum() if len(df) > 0 else 0
 
-    header_html = f"""
-<div class="section-header">
-    <div>
-        <div class="section-title">🐷 微博超话数据</div>
-        <div class="section-subtitle">
-            展示最近一次成功抓取结果 · 微博 token 过期时不影响寻艺和百度
-        </div>
-    </div>
-    <div class="update-time">{update_time if update_time else "更新时间未知"}</div>
-</div>
-"""
-    st.markdown(header_html, unsafe_allow_html=True)
-
-    for _, row in df.iterrows():
-        rank = row.get("排名", "")
-        name = row.get("艺人姓名", row.get("姓名", ""))
-        chaolike = row.get("超Like", "")
-        checkin = row.get("今日签到", "")
-        posts = row.get("日新帖", "")
-        error = row.get("错误信息", "")
-
-        error_text = ""
-        if pd.notna(error) and str(error).strip() not in ["None", "", "nan"]:
-            error_text = f"""
-<div style="margin-top: 8px; color: #b45309; font-size: 12px; font-weight: 700;">
-    ⚠️ {error}
-</div>
-"""
-
-        card_html = f"""
-<div class="rank-card">
-    <div class="card-watermark">张奕然四代唯一ACE</div>
-
-    <div class="card-content">
-        <div class="top-line">
-            <div class="identity">
-                <span class="rank-badge">#{rank}</span>
-                <span class="name">{name}</span>
-            </div>
-
-            <div class="score-box">
-                <div class="score">{format_num(chaolike)}</div>
-                <div class="score-label">超Like</div>
-            </div>
-        </div>
-
-        <div class="metric-row">
-            <div class="metric-box">
-                <div class="metric-label">今日签到</div>
-                <div class="metric-value">{format_num(checkin)}</div>
-            </div>
-
-            <div class="metric-box">
-                <div class="metric-label">日新帖</div>
-                <div class="metric-value">{format_num(posts)}</div>
-            </div>
-        </div>
-
-        <div class="bar-bg">
-            <div class="bar-fill" style="width: 100%;"></div>
-        </div>
-
-        <div class="bottom-row">
-            <span><i class="dot dot-3"></i>排名 #{rank}</span>
-            <span><i class="dot dot-2"></i>签到 {format_num(checkin)}</span>
-            <span><i class="dot dot-1"></i>新帖 {format_num(posts)}</span>
-        </div>
-
-        {error_text}
-    </div>
-</div>
-"""
-        st.markdown(card_html, unsafe_allow_html=True)
-
-    source_html = """
-<div class="data-source">
-    数据来源：微博超话接口抓取 CSV · 页面仅展示，不含任何登录信息
-</div>
-"""
-    st.markdown(source_html, unsafe_allow_html=True)
-
+    cards_html = "".join(make_weibo_card(row) for _, row in df.iterrows())
+    full_html = build_page(
+        title="Domi 微博超话榜 🐷",
+        subtitle="展示最近一次成功抓取结果 · 微博 token 过期时不影响其他榜",
+        status_text="手动更新 🐷",
+        last_update=last_update,
+        mini_items=[
+            ("当前人数", format_num(total_people)),
+            ("最高超Like", format_num(top_chaolike)),
+            ("总超Like", format_num(total_chaolike)),
+        ],
+        cards_html=cards_html,
+        footer_text="数据来源：微博超话接口抓取 CSV · 页面仅展示，不含任何登录信息",
+    )
+    height = max(900, 160 + len(df) * 150)
+    components.html(full_html, height=height, scrolling=True)
 
 tab1, tab2, tab3 = st.tabs(["🐷 寻艺点赞", "🌸 百度送花", "🐷 微博超话"])
 with tab1:
