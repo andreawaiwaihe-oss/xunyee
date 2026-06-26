@@ -638,6 +638,12 @@ body {
         left: 55%; 
         top: 40%;
     }
+    .error-text {
+    margin-top: 8px;
+    color: #b45309;
+    font-size: 12px;
+    font-weight: 700;
+    }
 
     .domi-card::before {
         right: 12px;
@@ -806,7 +812,7 @@ def render_weibo_tab():
         unsafe_allow_html=True,
     )
 
-    for _, row in df.iterrows():
+        for _, row in df.iterrows():
         rank = row.get("排名", "")
         name = row.get("艺人姓名", row.get("姓名", ""))
         chaolike = row.get("超Like", "")
@@ -816,72 +822,53 @@ def render_weibo_tab():
 
         error_text = ""
         if pd.notna(error) and str(error).strip() not in ["None", "", "nan"]:
-            error_text = dedent(f"""
-            <div style="
-                margin-top: 8px;
-                color: #b45309;
-                font-size: 12px;
-                font-weight: 700;
-            ">
-                ⚠️ {error}
+            error_text = f'<div class="error-text">⚠️ {error}</div>'
+
+        html = f"""
+<div class="rank-card">
+    <div class="card-watermark">张奕然四代唯一ACE</div>
+
+    <div class="card-content">
+        <div class="top-line">
+            <div class="identity">
+                <span class="rank-badge">#{rank}</span>
+                <span class="name">{name}</span>
             </div>
-            """)
 
-        st.markdown(
-            dedent(f"""
-            <div class="rank-card">
-                <div class="card-watermark">张奕然四代唯一ACE</div>
-
-                <div class="card-content">
-                    <div class="top-line">
-                        <div class="identity">
-                            <span class="rank-badge">#{rank}</span>
-                            <span class="name">{name}</span>
-                        </div>
-
-                        <div class="score-box">
-                            <div class="score">{format_num(chaolike)}</div>
-                            <div class="score-label">超Like</div>
-                        </div>
-                    </div>
-
-                    <div class="metric-row">
-                        <div class="metric-box">
-                            <div class="metric-label">今日签到</div>
-                            <div class="metric-value">{format_num(checkin)}</div>
-                        </div>
-
-                        <div class="metric-box">
-                            <div class="metric-label">日新帖</div>
-                            <div class="metric-value">{format_num(posts)}</div>
-                        </div>
-                    </div>
-
-                    <div class="bar-bg">
-                        <div class="bar-fill" style="width: 100%;"></div>
-                    </div>
-
-                    <div class="bottom-row">
-                        <span><i class="dot dot-3"></i>排名 #{rank}</span>
-                        <span><i class="dot dot-2"></i>签到 {format_num(checkin)}</span>
-                        <span><i class="dot dot-1"></i>新帖 {format_num(posts)}</span>
-                    </div>
-
-                    {error_text}
-                </div>
+            <div class="score-box">
+                <div class="score">{format_num(chaolike)}</div>
+                <div class="score-label">超Like</div>
             </div>
-            """),
-            unsafe_allow_html=True,
-        )
-
-    st.markdown(
-        dedent("""
-        <div class="data-source">
-            数据来源：微博超话接口抓取 CSV · 页面仅展示，不含任何登录信息
         </div>
-        """),
-        unsafe_allow_html=True,
-    )
+
+        <div class="metric-row">
+            <div class="metric-box">
+                <div class="metric-label">今日签到</div>
+                <div class="metric-value">{format_num(checkin)}</div>
+            </div>
+
+            <div class="metric-box">
+                <div class="metric-label">日新帖</div>
+                <div class="metric-value">{format_num(posts)}</div>
+            </div>
+        </div>
+
+        <div class="bar-bg">
+            <div class="bar-fill" style="width: 100%;"></div>
+        </div>
+
+        <div class="bottom-row">
+            <span><i class="dot dot-3"></i>排名 #{rank}</span>
+            <span><i class="dot dot-2"></i>签到 {format_num(checkin)}</span>
+            <span><i class="dot dot-1"></i>新帖 {format_num(posts)}</span>
+        </div>
+
+        {error_text}
+    </div>
+</div>
+"""
+
+        st.markdown(html, unsafe_allow_html=True)
 
 
 tab1, tab2, tab3 = st.tabs(["🐷 寻艺点赞", "🌸 百度送花", "🐷 微博超话"])
