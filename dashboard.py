@@ -759,29 +759,27 @@ def render_baidu_page():
 def render_weibo_tab():
     if not WEIBO_CSV.exists():
         st.markdown(
-            """
-            <div style="
-                max-width: 620px;
-                margin: 20px auto;
-                background: linear-gradient(135deg, #FFF4E6, #FFFFFF);
-                border: 1px solid rgba(255,149,45,0.30);
-                border-radius: 22px;
-                padding: 22px 24px;
-                box-shadow: 0 8px 24px rgba(255,149,45,0.10);
-            ">
-                <div style="font-size: 26px; font-weight: 900; color: #2d241f;">
-                    🐷 微博超话数据
+            dedent("""
+            <div class="section-header">
+                <div>
+                    <div class="section-title">🐷 微博超话数据</div>
+                    <div class="section-subtitle">
+                        微博数据暂未接入。微博 token 比较容易过期，之后会展示最近一次成功抓取的数据。
+                    </div>
                 </div>
-                <div style="font-size: 14px; color: #b06a25; margin-top: 8px; line-height: 1.7;">
-                    微博数据暂未接入。微博 token 比较容易过期，之后会展示最近一次成功抓取的数据。
-                </div>
+                <div class="update-time">暂无数据</div>
             </div>
-            """,
+            """),
             unsafe_allow_html=True,
         )
         return
 
-    df = pd.read_csv(WEIBO_CSV)
+    try:
+        df = pd.read_csv(WEIBO_CSV)
+    except Exception as e:
+        st.error("微博数据读取失败")
+        st.caption(str(e))
+        return
 
     if df.empty:
         st.warning("微博超话数据为空，可能是 token 已过期。")
@@ -804,7 +802,7 @@ def render_weibo_tab():
             </div>
             <div class="update-time">{update_time if update_time else "更新时间未知"}</div>
         </div>
-        """,
+        """),
         unsafe_allow_html=True,
     )
 
@@ -817,8 +815,8 @@ def render_weibo_tab():
         error = row.get("错误信息", "")
 
         error_text = ""
-        if pd.notna(error) and str(error) not in ["None", "", "nan"]:
-            error_text = f"""
+        if pd.notna(error) and str(error).strip() not in ["None", "", "nan"]:
+            error_text = dedent(f"""
             <div style="
                 margin-top: 8px;
                 color: #b45309;
@@ -827,7 +825,7 @@ def render_weibo_tab():
             ">
                 ⚠️ {error}
             </div>
-            """
+            """)
 
         st.markdown(
             dedent(f"""
@@ -839,48 +837,49 @@ def render_weibo_tab():
                         <div class="identity">
                             <span class="rank-badge">#{rank}</span>
                             <span class="name">{name}</span>
-                </div>
+                        </div>
 
-                <div class="score-box">
-                    <div class="score">{format_num(chaolike)}</div>
-                    <div class="score-label">超Like</div>
+                        <div class="score-box">
+                            <div class="score">{format_num(chaolike)}</div>
+                            <div class="score-label">超Like</div>
+                        </div>
+                    </div>
+
+                    <div class="metric-row">
+                        <div class="metric-box">
+                            <div class="metric-label">今日签到</div>
+                            <div class="metric-value">{format_num(checkin)}</div>
+                        </div>
+
+                        <div class="metric-box">
+                            <div class="metric-label">日新帖</div>
+                            <div class="metric-value">{format_num(posts)}</div>
+                        </div>
+                    </div>
+
+                    <div class="bar-bg">
+                        <div class="bar-fill" style="width: 100%;"></div>
+                    </div>
+
+                    <div class="bottom-row">
+                        <span><i class="dot dot-3"></i>排名 #{rank}</span>
+                        <span><i class="dot dot-2"></i>签到 {format_num(checkin)}</span>
+                        <span><i class="dot dot-1"></i>新帖 {format_num(posts)}</span>
+                    </div>
+
+                    {error_text}
                 </div>
             </div>
-
-            <div class="metric-row">
-                <div class="metric-box">
-                    <div class="metric-label">今日签到</div>
-                    <div class="metric-value">{format_num(checkin)}</div>
-                </div>
-                <div class="metric-box">
-                    <div class="metric-label">日新帖</div>
-                    <div class="metric-value">{format_num(posts)}</div>
-                </div>
-            </div>
-
-            <div class="bar-bg">
-                <div class="bar-fill" style="width: 100%;"></div>
-            </div>
-
-            <div class="bottom-row">
-                <span><i class="dot dot-3"></i>排名 #{rank}</span>
-                <span><i class="dot dot-2"></i>签到 {format_num(checkin)}</span>
-                <span><i class="dot dot-1"></i>新帖 {format_num(posts)}</span>
-            </div>
-
-            {error_text}
-        </div>
-    </div>
-    """),
-    unsafe_allow_html=True,
-)
+            """),
+            unsafe_allow_html=True,
+        )
 
     st.markdown(
-        """
+        dedent("""
         <div class="data-source">
             数据来源：微博超话接口抓取 CSV · 页面仅展示，不含任何登录信息
         </div>
-        """,
+        """),
         unsafe_allow_html=True,
     )
 
