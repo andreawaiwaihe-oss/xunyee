@@ -764,20 +764,18 @@ def render_baidu_page():
 
 def render_weibo_tab():
     if not WEIBO_CSV.exists():
-        st.markdown(
-            dedent("""
-            <div class="section-header">
-                <div>
-                    <div class="section-title">🐷 微博超话数据</div>
-                    <div class="section-subtitle">
-                        微博数据暂未接入。微博 token 比较容易过期，之后会展示最近一次成功抓取的数据。
-                    </div>
-                </div>
-                <div class="update-time">暂无数据</div>
-            </div>
-            """),
-            unsafe_allow_html=True,
-        )
+        html = """
+<div class="section-header">
+    <div>
+        <div class="section-title">🐷 微博超话数据</div>
+        <div class="section-subtitle">
+            微博数据暂未接入。微博 token 比较容易过期，之后会展示最近一次成功抓取的数据。
+        </div>
+    </div>
+    <div class="update-time">暂无数据</div>
+</div>
+"""
+        st.markdown(html, unsafe_allow_html=True)
         return
 
     try:
@@ -797,20 +795,18 @@ def render_weibo_tab():
         if not valid_times.empty:
             update_time = str(valid_times.iloc[0])
 
-    st.markdown(
-        dedent(f"""
-        <div class="section-header">
-            <div>
-                <div class="section-title">🐷 微博超话数据</div>
-                <div class="section-subtitle">
-                    展示最近一次成功抓取结果 · 微博 token 过期时不影响寻艺和百度
-                </div>
-            </div>
-            <div class="update-time">{update_time if update_time else "更新时间未知"}</div>
+    header_html = f"""
+<div class="section-header">
+    <div>
+        <div class="section-title">🐷 微博超话数据</div>
+        <div class="section-subtitle">
+            展示最近一次成功抓取结果 · 微博 token 过期时不影响寻艺和百度
         </div>
-        """),
-        unsafe_allow_html=True,
-    )
+    </div>
+    <div class="update-time">{update_time if update_time else "更新时间未知"}</div>
+</div>
+"""
+    st.markdown(header_html, unsafe_allow_html=True)
 
     for _, row in df.iterrows():
         rank = row.get("排名", "")
@@ -822,9 +818,13 @@ def render_weibo_tab():
 
         error_text = ""
         if pd.notna(error) and str(error).strip() not in ["None", "", "nan"]:
-            error_text = f'<div class="error-text">⚠️ {error}</div>'
+            error_text = f"""
+<div style="margin-top: 8px; color: #b45309; font-size: 12px; font-weight: 700;">
+    ⚠️ {error}
+</div>
+"""
 
-        html = f"""
+        card_html = f"""
 <div class="rank-card">
     <div class="card-watermark">张奕然四代唯一ACE</div>
 
@@ -867,8 +867,14 @@ def render_weibo_tab():
     </div>
 </div>
 """
+        st.markdown(card_html, unsafe_allow_html=True)
 
-        st.markdown(html, unsafe_allow_html=True)
+    source_html = """
+<div class="data-source">
+    数据来源：微博超话接口抓取 CSV · 页面仅展示，不含任何登录信息
+</div>
+"""
+    st.markdown(source_html, unsafe_allow_html=True)
 
 
 tab1, tab2, tab3 = st.tabs(["🐷 寻艺点赞", "🌸 百度送花", "🐷 微博超话"])
