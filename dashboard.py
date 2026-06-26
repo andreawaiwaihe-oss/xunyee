@@ -56,7 +56,7 @@ st.markdown(
 
 XUNYEE_CSV = Path("xunyee_like_fans_count.csv")
 BAIDU_CSV = Path("baidu_send_flower_data.csv")
-WEIBO_CSV = Path("weibo_chaohua_full.csv")
+WEIBO_CSV = Path("weibo_chaohua_data.csv")
 
 
 def to_int(value):
