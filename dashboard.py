@@ -780,12 +780,7 @@ def render_weibo_tab():
         )
         return
 
-    try:
-        df = pd.read_csv(WEIBO_CSV)
-    except Exception as e:
-        st.error("微博数据读取失败")
-        st.caption(str(e))
-        return
+    df = pd.read_csv(WEIBO_CSV)
 
     if df.empty:
         st.warning("微博超话数据为空，可能是 token 已过期。")
@@ -799,47 +794,94 @@ def render_weibo_tab():
 
     st.markdown(
         f"""
-        <div style="
-            max-width: 620px;
-            margin: 16px auto 14px auto;
-            background: linear-gradient(135deg, #FFF4E6, #FFFFFF);
-            border: 1px solid rgba(255,149,45,0.30);
-            border-radius: 22px;
-            padding: 18px 22px;
-            box-shadow: 0 8px 24px rgba(255,149,45,0.10);
-        ">
-            <div style="font-size: 26px; font-weight: 900; color: #2d241f;">
-                🐷 微博超话数据
+        <div class="section-header">
+            <div>
+                <div class="section-title">🐷 微博超话数据</div>
+                <div class="section-subtitle">
+                    展示最近一次成功抓取结果 · 微博 token 过期时不影响寻艺和百度
+                </div>
             </div>
-            <div style="font-size: 13px; color: #b06a25; margin-top: 5px;">
-                展示最近一次成功抓取结果。微博 token 过期时，不影响寻艺和百度数据。
-            </div>
-            <div style="font-size: 12px; color: #8a6b55; margin-top: 8px;">
-                上次成功更新：{update_time if update_time else "未知"}
-            </div>
+            <div class="update-time">{update_time if update_time else "更新时间未知"}</div>
         </div>
         """,
         unsafe_allow_html=True,
     )
 
-    show_cols = [
-        c for c in [
-            "排名",
-            "艺人姓名",
-            "姓名",
-            "超Like",
-            "今日签到",
-            "日新帖",
-            "抓取时间",
-            "错误信息",
-        ]
-        if c in df.columns
-    ]
+    for _, row in df.iterrows():
+        rank = row.get("排名", "")
+        name = row.get("艺人姓名", row.get("姓名", ""))
+        chaolike = row.get("超Like", "")
+        checkin = row.get("今日签到", "")
+        posts = row.get("日新帖", "")
+        error = row.get("错误信息", "")
 
-    if show_cols:
-        st.dataframe(df[show_cols], use_container_width=True, hide_index=True)
-    else:
-        st.dataframe(df, use_container_width=True, hide_index=True)
+        error_text = ""
+        if pd.notna(error) and str(error) not in ["None", "", "nan"]:
+            error_text = f"""
+            <div style="
+                margin-top: 8px;
+                color: #b45309;
+                font-size: 12px;
+                font-weight: 700;
+            ">
+                ⚠️ {error}
+            </div>
+            """
+
+        st.markdown(
+            f"""
+            <div class="rank-card">
+                <div class="card-watermark">张奕然四代唯一ACE</div>
+
+                <div class="card-content">
+                    <div class="top-line">
+                        <div class="identity">
+                            <span class="rank-badge">#{rank}</span>
+                            <span class="name">{name}</span>
+                        </div>
+
+                        <div class="score-box">
+                            <div class="score">{format_num(chaolike)}</div>
+                            <div class="score-label">超Like</div>
+                        </div>
+                    </div>
+
+                    <div class="metric-row">
+                        <div class="metric-box">
+                            <div class="metric-label">今日签到</div>
+                            <div class="metric-value">{format_num(checkin)}</div>
+                        </div>
+                        <div class="metric-box">
+                            <div class="metric-label">日新帖</div>
+                            <div class="metric-value">{format_num(posts)}</div>
+                        </div>
+                    </div>
+
+                    <div class="bar-bg">
+                        <div class="bar-fill" style="width: 100%;"></div>
+                    </div>
+
+                    <div class="bottom-row">
+                        <span><i class="dot dot-3"></i>排名 #{rank}</span>
+                        <span><i class="dot dot-2"></i>签到 {format_num(checkin)}</span>
+                        <span><i class="dot dot-1"></i>新帖 {format_num(posts)}</span>
+                    </div>
+
+                    {error_text}
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+    st.markdown(
+        """
+        <div class="data-source">
+            数据来源：微博超话接口抓取 CSV · 页面仅展示，不含任何登录信息
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
 
 tab1, tab2, tab3 = st.tabs(["🐷 寻艺点赞", "🌸 百度送花", "🐷 微博超话"])
