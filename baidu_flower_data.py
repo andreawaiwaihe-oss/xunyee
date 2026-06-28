@@ -383,6 +383,20 @@ def main():
 
         writer.writeheader()
         writer.writerows(final_rows)
+              history_file = "baidu_send_flower_data_history.csv"
+    history_exists = os.path.exists(history_file)
+
+    with open(history_file, "a", newline="", encoding="utf-8-sig") as hf:
+        history_writer = csv.DictWriter(
+            hf,
+            fieldnames=fieldnames,
+            extrasaction="ignore",
+        )
+
+        if not history_exists:
+            history_writer.writeheader()
+
+        history_writer.writerows(final_rows)
 
     print("\n完成，已导出：", output_file)
 
