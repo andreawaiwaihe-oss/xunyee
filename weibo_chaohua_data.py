@@ -817,6 +817,7 @@ def main():
         row["超Like人数"] = force_text_for_csv(row.get("超Like人数", ""))
         row["超Like"] = force_text_for_csv(row.get("超Like", ""))
 
+    
     with open(OUTPUT_FILE, "w", newline="", encoding="utf-8-sig") as f:
         writer = csv.DictWriter(
             f,
@@ -825,6 +826,20 @@ def main():
         )
         writer.writeheader()
         writer.writerows(final_rows)
+    history_file = "weibo_chaohua_data_history.csv"
+    history_exists = os.path.exists(history_file)
+
+    with open(history_file, "a", newline="", encoding="utf-8-sig") as hf:
+        history_writer = csv.DictWriter(
+            hf,
+            fieldnames=FIELDNAMES,
+            extrasaction="ignore",
+        )
+
+        if not history_exists:
+            history_writer.writeheader()
+
+        history_writer.writerows(final_rows)
 
     print("\n抓取完成，已导出：")
     print(OUTPUT_FILE)
