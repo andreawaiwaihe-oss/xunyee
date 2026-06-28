@@ -262,6 +262,20 @@ def main():
 
         writer.writeheader()
         writer.writerows(rows)
+history_file = "xunyee_like_fans_count_history.csv"
+history_exists = os.path.exists(history_file)
+
+with open(history_file, "a", newline="", encoding="utf-8-sig") as hf:
+    history_writer = csv.DictWriter(
+        hf,
+        fieldnames=fieldnames,
+        extrasaction="ignore",
+    )
+
+    if not history_exists:
+        history_writer.writeheader()
+
+    history_writer.writerows(final_rows)
 
     print("\n抓取完成，已导出：")
     print(output_file)
