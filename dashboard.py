@@ -1,3 +1,4 @@
+# dashboard.py — compact cards + 自选置顶 + optional history trend
 import pandas as pd
 import streamlit as st
 import streamlit.components.v1 as components
@@ -59,6 +60,10 @@ XUNYEE_CSV = Path("xunyee_like_fans_count.csv")
 BAIDU_CSV = Path("baidu_send_flower_data.csv")
 WEIBO_CSV = Path("weibo_chaohua_data.csv")
 
+XUNYEE_HISTORY_CSV = Path("xunyee_like_fans_count_history.csv")
+BAIDU_HISTORY_CSV = Path("baidu_send_flower_data_history.csv")
+WEIBO_HISTORY_CSV = Path("weibo_chaohua_data_history.csv")
+
 
 def to_int(value):
     if pd.isna(value) or value == "":
@@ -78,6 +83,104 @@ def get_col(df, possible_names):
         if name in df.columns:
             return name
     return None
+
+
+
+def apply_focus_controls(df, key, default_focus="张奕然"):
+    """顶部自选/置顶筛选：默认把张奕然置顶，但不强制只看自选。"""
+    if df.empty or "姓名" not in df.columns:
+        return df, []
+
+    names = [str(x) for x in df["姓名"].dropna().astype(str).unique().tolist() if str(x).strip()]
+    default_values = [default_focus] if default_focus in names else []
+
+    selected = st.multiselect(
+        "自选爱豆 / 对比对象",
+        options=names,
+        default=default_values,
+        key=f"{key}_focus_names",
+        help="默认会把自家置顶；也可以多选几位成员做对比。",
+    )
+
+    col1, col2 = st.columns(2)
+    with col1:
+        pin_selected = st.checkbox("自选置顶", value=True, key=f"{key}_pin_selected")
+    with col2:
+        show_only = st.checkbox("只看自选", value=False, key=f"{key}_show_only")
+
+    out = df.copy()
+    if selected and show_only:
+        out = out[out["姓名"].astype(str).isin(selected)].copy()
+
+    if selected and pin_selected and not out.empty:
+        order_map = {name: i for i, name in enumerate(selected)}
+        out["_focus_order"] = out["姓名"].astype(str).map(order_map).fillna(9999)
+        rank_col = "排名" if "排名" in out.columns else None
+        if rank_col:
+            out = out.sort_values(["_focus_order", rank_col], ascending=[True, True])
+        else:
+            out = out.sort_values(["_focus_order"], ascending=True)
+        out = out.drop(columns=["_focus_order"])
+
+    return out.reset_index(drop=True), selected
+
+
+def render_trend_expander(history_path, title, metric_names, selected_names, key):
+    """如果存在历史 CSV，就展示今天内趋势；没有历史 CSV 时只给提示，不影响页面。"""
+    with st.expander(f"📈 {title}趋势", expanded=False):
+        if not history_path.exists():
+            st.caption(f"暂时没找到历史文件：{history_path.name}。等你的抓取脚本开始追加历史快照后，这里会自动出现折线图。")
+            return
+
+        try:
+            hist = pd.read_csv(history_path)
+        except Exception as e:
+            st.caption(f"历史数据读取失败：{e}")
+            return
+
+        if hist.empty:
+            st.caption("历史数据为空，暂时不能画趋势。")
+            return
+
+        name_col = get_col(hist, ["姓名", "艺人姓名", "超话名称", "name"])
+        time_col = get_col(hist, ["抓取时间", "更新时间", "update_time", "time"])
+        metric_col = get_col(hist, metric_names)
+
+        if not name_col or not time_col or not metric_col:
+            st.caption("历史 CSV 缺少姓名、时间或指标列，暂时不能画趋势。")
+            return
+
+        trend = hist[[name_col, time_col, metric_col]].copy()
+        trend.columns = ["姓名", "抓取时间", "数值"]
+        trend["姓名"] = trend["姓名"].astype(str)
+        trend["数值"] = trend["数值"].apply(to_int)
+        trend["抓取时间"] = pd.to_datetime(trend["抓取时间"], errors="coerce")
+        trend = trend.dropna(subset=["抓取时间"])
+
+        if trend.empty:
+            st.caption("历史时间列无法识别，暂时不能画趋势。")
+            return
+
+        # 默认只看今天；如果今天没有数据，就展示最近一天。
+        latest_day = trend["抓取时间"].dt.date.max()
+        trend = trend[trend["抓取时间"].dt.date == latest_day].copy()
+
+        if selected_names:
+            trend = trend[trend["姓名"].isin(selected_names)].copy()
+        else:
+            top_names = (
+                trend.groupby("姓名")["数值"].max().sort_values(ascending=False).head(5).index.tolist()
+            )
+            trend = trend[trend["姓名"].isin(top_names)].copy()
+
+        if trend.empty:
+            st.caption("当前筛选对象没有历史趋势数据。")
+            return
+
+        trend["时间"] = trend["抓取时间"].dt.strftime("%H:%M")
+        pivot = trend.pivot_table(index="时间", columns="姓名", values="数值", aggfunc="max").sort_index()
+        st.line_chart(pivot)
+        st.caption("折线图读取历史 CSV；如果要更顺滑，需要抓取脚本每次更新时追加一份历史快照。")
 
 
 def normalize_xunyee_df(df):
@@ -397,7 +500,7 @@ body {
 .page {
     max-width: 620px;
     margin: 0 auto;
-    padding: 12px 10px 28px 10px;
+    padding: 9px 8px 22px 8px;
 }
 .domi-inline-tag {
     display: inline-flex;
@@ -417,8 +520,8 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    gap: 10px;
-    margin-bottom: 10px;
+    gap: 8px;
+    margin-bottom: 7px;
 }
 .title-wrap { min-width: 0; }
 .title-row {
@@ -428,7 +531,7 @@ body {
     flex-wrap: wrap;
 }
 .title {
-    font-size: 28px;
+    font-size: 25px;
     font-weight: 950;
     letter-spacing: -0.6px;
     color: #2b2118;
@@ -467,14 +570,14 @@ body {
 .mini-bar {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-    margin: 10px 0 12px 0;
+    gap: 7px;
+    margin: 7px 0 9px 0;
 }
 .mini-box {
     background: rgba(255,255,255,0.92);
     border: 1px solid #ffe1bd;
-    border-radius: 16px;
-    padding: 9px 10px;
+    border-radius: 14px;
+    padding: 7px 9px;
     box-shadow: 0 6px 18px rgba(255, 149, 45, 0.08);
 }
 .mini-label {
@@ -485,7 +588,7 @@ body {
 }
 .mini-value {
     color: #2d251f;
-    font-size: 17px;
+    font-size: 16px;
     font-weight: 950;
     line-height: 1.1;
 }
@@ -494,9 +597,9 @@ body {
     overflow: hidden;
     background: rgba(255,255,255,0.98);
     border: 1px solid #ffe2bf;
-    border-radius: 20px;
-    padding: 13px 14px 12px 14px;
-    margin-bottom: 10px;
+    border-radius: 18px;
+    padding: 10px 12px 9px 12px;
+    margin-bottom: 8px;
     box-shadow: 0 12px 28px rgba(255, 149, 45, 0.12);
 }
 .domi-card {
@@ -546,7 +649,7 @@ body {
 }
 .medal { font-size: 13px; }
 .name {
-    font-size: 23px;
+    font-size: 20px;
     font-weight: 950;
     color: #2b2118;
     line-height: 1.1;
@@ -559,9 +662,9 @@ body {
     font-size: 11px;
     font-weight: 950;
 }
-.main-data { text-align: right; min-width: 108px; }
+.main-data { text-align: right; min-width: 96px; }
 .main-number {
-    font-size: 34px;
+    font-size: 30px;
     font-weight: 950;
     color: #ff952d;
     line-height: 0.95;
@@ -573,14 +676,14 @@ body {
     color: #a8784d;
     font-weight: 850;
 }
-.gap-row { min-height: 22px; margin-top: 3px; }
+.gap-row { min-height: 18px; margin-top: 1px; }
 .gap-pill {
     display: inline-block;
     background: linear-gradient(135deg, #ff952d, #ff6a00);
     color: white;
     border-radius: 999px;
-    padding: 4px 9px;
-    font-size: 12px;
+    padding: 3px 8px;
+    font-size: 11px;
     font-weight: 950;
 }
 .hot-pill {
@@ -596,31 +699,31 @@ body {
 .mini-stats {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 7px;
-    margin-top: 4px;
+    gap: 6px;
+    margin-top: 3px;
 }
 .mini-stats.two { grid-template-columns: repeat(2, 1fr); }
 .mini-stats span {
     background: #fffaf4;
     border: 1px solid #ffe8cd;
-    border-radius: 12px;
-    padding: 7px 8px;
+    border-radius: 11px;
+    padding: 5px 7px;
     color: #8d8ba5;
     font-size: 11px;
     font-weight: 850;
 }
 .mini-stats b {
     color: #2d251f;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 950;
     margin-left: 3px;
 }
 .bar, .single-bar {
     display: flex;
-    height: 8px;
+    height: 6px;
     border-radius: 999px;
     overflow: hidden;
-    margin-top: 10px;
+    margin-top: 7px;
     background: #ffe8cd;
 }
 .bar-3 { background: #ffb84d; }
@@ -631,9 +734,9 @@ body {
     background: linear-gradient(90deg, #ffb84d 0%, #ff952d 45%, #ff6a00 100%);
 }
 .bottom-row {
-    margin-top: 8px;
+    margin-top: 6px;
     color: #9a704c;
-    font-size: 11px;
+    font-size: 10.5px;
     display: flex;
     justify-content: space-between;
     gap: 6px;
@@ -670,13 +773,13 @@ body {
     margin-left: 6px !important;
     }
     .compact-card {
-        padding: 16px 14px !important;
-        border-radius: 22px !important;
-        margin-bottom: 14px !important;
+        padding: 11px 10px !important;
+        border-radius: 18px !important;
+        margin-bottom: 9px !important;
     }
 
     .name { 
-        font-size: 24px; 
+        font-size: 20px; 
         max-width: 145px;
         white-space: nowrap;
         overflow: hidden;
@@ -684,7 +787,7 @@ body {
     }
 
     .main-number { 
-        font-size: 36px; 
+        font-size: 30px; 
         line-height: 1;
     }
 
@@ -730,7 +833,7 @@ body {
     }
 
     .card-watermark { 
-        font-size: 20px; 
+        font-size: 16px; 
         left: 55%; 
         top: 40%;
     }
@@ -806,6 +909,14 @@ def render_xunyee_page():
 
     df_raw = pd.read_csv(XUNYEE_CSV)
     df = normalize_xunyee_df(df_raw)
+    df, selected_names = apply_focus_controls(df, "xunyee")
+    render_trend_expander(
+        XUNYEE_HISTORY_CSV,
+        "寻艺今日点赞",
+        ["今日点赞", "实时获赞数", "获赞数"],
+        selected_names,
+        "xunyee_trend",
+    )
     last_update = str(df["抓取时间"].iloc[0]) if len(df) > 0 else ""
     top_like = df["今日点赞_num"].max() if len(df) > 0 else 0
     total_people = len(df)
@@ -825,7 +936,7 @@ def render_xunyee_page():
         cards_html=cards_html,
         footer_text="数据来源：寻艺接口抓取 CSV · 页面仅展示，不含任何登录信息",
     )
-    height = max(900, 160 + len(df) * 160)
+    height = max(760, 145 + len(df) * 125)
     components.html(full_html, height=height, scrolling=True)
 
 
@@ -836,6 +947,14 @@ def render_baidu_page():
 
     df_raw = pd.read_csv(BAIDU_CSV)
     df = normalize_baidu_df(df_raw)
+    df, selected_names = apply_focus_controls(df, "baidu")
+    render_trend_expander(
+        BAIDU_HISTORY_CSV,
+        "百度今日送花",
+        ["今日送花", "送花数"],
+        selected_names,
+        "baidu_trend",
+    )
     last_update = str(df["抓取时间"].iloc[0]) if len(df) > 0 else ""
     top_gift = df["今日送花_num"].max() if len(df) > 0 else 0
     total_people = len(df)
@@ -855,7 +974,7 @@ def render_baidu_page():
         cards_html=cards_html,
         footer_text="数据来源：百度送花接口抓取 CSV · 页面仅展示，不含任何登录信息",
     )
-    height = max(900, 160 + len(df) * 150)
+    height = max(760, 145 + len(df) * 118)
     components.html(full_html, height=height, scrolling=True)
 
 
@@ -902,6 +1021,14 @@ def render_weibo_tab():
         return
 
     df = normalize_weibo_df(df_raw)
+    df, selected_names = apply_focus_controls(df, "weibo")
+    render_trend_expander(
+        WEIBO_HISTORY_CSV,
+        "微博超Like",
+        ["超Like", "超like", "超LIKE", "chaolike"],
+        selected_names,
+        "weibo_trend",
+    )
     last_update = str(df["抓取时间"].iloc[0]) if len(df) > 0 else ""
     top_chaolike = df["超Like_num"].max() if len(df) > 0 else 0
     total_people = len(df)
@@ -921,7 +1048,7 @@ def render_weibo_tab():
         cards_html=cards_html,
         footer_text="展示最近一次成功抓取结果 · 微博 token 过期时不影响其他榜 · 数据来源：微博超话接口抓取 CSV",
     )
-    height = max(900, 160 + len(df) * 150)
+    height = max(760, 145 + len(df) * 118)
     components.html(full_html, height=height, scrolling=True)
 
 tab1, tab2, tab3 = st.tabs(["🐷 寻艺点赞", "🌸 百度送花", "🐷 微博超话"])
@@ -931,3 +1058,4 @@ with tab2:
     render_baidu_page()
 with tab3:
     render_weibo_tab()
+
