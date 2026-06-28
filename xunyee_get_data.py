@@ -241,27 +241,31 @@ def main():
             else:
                 row["距离上一名"] = ""
 
-    output_file = "xunyee_like_fans_count.csv"
+   output_file = "xunyee_like_fans_count.csv"
 
-    with open(output_file, "w", newline="", encoding="utf-8-sig") as f:
-        writer = csv.DictWriter(
-            f,
-            fieldnames=[
-                "抓取时间",
-                "排名",
-                "艺人姓名",
-                "实时获赞数",
-                "距离上一名",
-                "粉丝数",
-                "点赞一次",
-                "点赞两次",
-                "点赞三次",
-                "错误信息",
-            ]
-        )
+    fieldnames = [
+        "抓取时间",
+        "排名",
+        "艺人姓名",
+        "实时获赞数",
+        "距离上一名",
+        "粉丝数",
+        "点赞一次",
+        "点赞两次",
+        "点赞三次",
+        "错误信息",
+]
 
-        writer.writeheader()
-        writer.writerows(rows)
+with open(output_file, "w", newline="", encoding="utf-8-sig") as f:
+    writer = csv.DictWriter(
+        f,
+        fieldnames=fieldnames,
+        extrasaction="ignore",
+    )
+
+    writer.writeheader()
+    writer.writerows(rows)
+
 history_file = "xunyee_like_fans_count_history.csv"
 history_exists = os.path.exists(history_file)
 
@@ -275,7 +279,7 @@ with open(history_file, "a", newline="", encoding="utf-8-sig") as hf:
     if not history_exists:
         history_writer.writeheader()
 
-    history_writer.writerows(final_rows)
+    history_writer.writerows(rows)
 
     print("\n抓取完成，已导出：")
     print(output_file)
