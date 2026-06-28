@@ -383,7 +383,7 @@ def main():
 
         writer.writeheader()
         writer.writerows(final_rows)
-              history_file = "baidu_send_flower_data_history.csv"
+            history_file = "baidu_send_flower_data_history.csv"
     history_exists = os.path.exists(history_file)
 
     with open(history_file, "a", newline="", encoding="utf-8-sig") as hf:
