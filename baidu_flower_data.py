@@ -4,7 +4,34 @@ import os
 import requests
 from datetime import datetime, timezone, timedelta
 
+from pathlib import Path
+from zoneinfo import ZoneInfo
+import pandas as pd
 
+
+def append_history(df, history_path):
+    history_path = Path(history_path)
+
+    now = datetime.now(ZoneInfo("Asia/Shanghai")).strftime("%Y-%m-%d %H:%M:%S")
+
+    df_history = df.copy()
+
+    if "抓取时间" not in df_history.columns:
+        df_history["抓取时间"] = now
+    else:
+        df_history["抓取时间"] = df_history["抓取时间"].fillna(now)
+        df_history.loc[
+            df_history["抓取时间"].astype(str).str.strip() == "",
+            "抓取时间"
+        ] = now
+
+    if history_path.exists():
+        old = pd.read_csv(history_path)
+        combined = pd.concat([old, df_history], ignore_index=True)
+    else:
+        combined = df_history
+
+    combined.to_csv(history_path, index=False, encoding="utf-8-sig")
 
 
 # =========================
