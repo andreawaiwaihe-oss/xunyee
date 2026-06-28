@@ -169,6 +169,16 @@ def normalize_weibo_df(df):
     output["超Like_num"] = output["超Like"].apply(to_int)
     output = output.sort_values("超Like_num", ascending=False).reset_index(drop=True)
     output["排名"] = output.index + 1
+
+    distances = []
+    for i, row in output.iterrows():
+        if i == 0:
+            distances.append("")
+        else:
+            prev_val = to_int(output.loc[i - 1, "超Like"])
+            curr_val = to_int(row["超Like"])
+            distances.append(prev_val - curr_val if prev_val and curr_val else "")
+    output["距上一名"] = distances
     return output
 
 
@@ -320,13 +330,20 @@ def make_weibo_card(row):
     checkin = to_int(row["今日签到"])
     posts = to_int(row["日新帖"])
     error = row["错误信息"]
+    distance = row.get("距上一名", "")
 
     is_domi = str(name) == "张奕然"
     card_class = "compact-card weibo-card domi-card" if is_domi else "compact-card weibo-card"
 
-    error_html = ""
+    gap_html = ""
     if str(error).strip() not in ["", "nan", "None"]:
-        error_html = f'<span class="gap-pill hot-pill">⚠️ {error}</span>'
+        gap_html = f'<span class="gap-pill hot-pill">⚠️ {error}</span>'
+    elif is_domi and rank == 1:
+        gap_html = '<span class="gap-pill domi-pill">👑🐷 Domi 超话第一，继续守住！</span>'
+    elif is_domi and str(distance) not in ["", "nan", "None"]:
+        gap_html = f'<span class="gap-pill hot-pill">还差 {format_num(distance)} 超Like 追上前方 🐷</span>'
+    elif rank != 1 and str(distance) not in ["", "nan", "None"]:
+        gap_html = f'<span class="gap-pill">距上一名 {format_num(distance)} 超Like</span>'
 
     domi_tag_html = '<span class="domi-inline-tag">四代唯一ACE</span>' if is_domi else ""
 
@@ -347,7 +364,7 @@ def make_weibo_card(row):
                 </div>
             </div>
 
-            <div class="gap-row">{error_html}</div>
+            <div class="gap-row">{gap_html}</div>
 
             <div class="mini-stats two">
                 <span>今日签到 <b>{format_num(checkin)}</b></span>
@@ -893,8 +910,8 @@ def render_weibo_tab():
     cards_html = "".join(make_weibo_card(row) for _, row in df.iterrows())
     full_html = build_page(
         title="Domi 微博超话榜 🐷",
-        subtitle="展示最近一次成功抓取结果 · 微博 token 过期时不影响其他榜",
-        status_text="手动更新 🐷",
+        subtitle="Domi 正在努力冲超Like中 · 整点更新版",
+        status_text="整点更新 🐷",
         last_update=last_update,
         mini_items=[
             ("当前人数", format_num(total_people)),
@@ -902,7 +919,7 @@ def render_weibo_tab():
             ("总超Like", format_num(total_chaolike)),
         ],
         cards_html=cards_html,
-        footer_text="数据来源：微博超话接口抓取 CSV · 页面仅展示，不含任何登录信息",
+        footer_text="展示最近一次成功抓取结果 · 微博 token 过期时不影响其他榜 · 数据来源：微博超话接口抓取 CSV",
     )
     height = max(900, 160 + len(df) * 150)
     components.html(full_html, height=height, scrolling=True)
