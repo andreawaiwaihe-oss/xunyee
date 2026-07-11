@@ -1,11 +1,11 @@
 ﻿抓取时间,排名,艺人姓名,实时获赞数,距离上一名,粉丝数,点赞一次,点赞两次,点赞三次,错误信息
-2026-07-12 00:03:16,1,王橹杰,19015,,34390,27,11,33,
-2026-07-12 00:03:16,2,杨博文,11424,7591,66603,12,3,11,
-2026-07-12 00:03:16,3,左奇函,,,,,,,"HTTPSConnectionPool(host='api.xunyee.cn', port=443): Read timed out. (read timeout=15)"
-2026-07-12 00:03:16,4,陈浚铭,,,,,,,"HTTPSConnectionPool(host='api.xunyee.cn', port=443): Read timed out. (read timeout=15)"
-2026-07-12 00:03:16,5,张桂源,,,,,,,"HTTPSConnectionPool(host='api.xunyee.cn', port=443): Read timed out. (read timeout=15)"
-2026-07-12 00:03:16,6,张函瑞,,,,,,,"HTTPSConnectionPool(host='api.xunyee.cn', port=443): Read timed out. (read timeout=15)"
-2026-07-12 00:03:16,7,张奕然,,,,,,,"HTTPSConnectionPool(host='api.xunyee.cn', port=443): Read timed out. (read timeout=15)"
-2026-07-12 00:03:16,8,李煜东,,,,,,,"HTTPSConnectionPool(host='api.xunyee.cn', port=443): Read timed out. (read timeout=15)"
-2026-07-12 00:03:16,9,陈思罕,,,,,,,"HTTPSConnectionPool(host='api.xunyee.cn', port=443): Read timed out. (read timeout=15)"
-2026-07-12 00:03:16,10,陈奕恒,,,,,,,"HTTPSConnectionPool(host='api.xunyee.cn', port=443): Read timed out. (read timeout=15)"
+2026-07-12 00:43:38,1,王橹杰,1289,,34402,85,16,394,
+2026-07-12 00:43:38,2,陈奕恒,653,636,27729,48,5,197,
+2026-07-12 00:43:38,3,张函瑞,503,150,28521,32,4,155,
+2026-07-12 00:43:38,4,张桂源,487,16,50345,39,7,143,
+2026-07-12 00:43:38,5,陈浚铭,465,22,31295,31,8,139,
+2026-07-12 00:43:38,6,杨博文,448,17,66604,31,4,135,
+2026-07-12 00:43:38,7,陈思罕,297,151,13040,22,1,91,
+2026-07-12 00:43:38,8,左奇函,291,6,21356,32,3,84,
+2026-07-12 00:43:38,9,张奕然,270,21,11240,17,2,80,
+2026-07-12 00:43:38,10,李煜东,194,76,16744,5,0,63,
