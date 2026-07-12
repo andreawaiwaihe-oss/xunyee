@@ -3,8 +3,6 @@ name: Update Baidu Flower CSV
 on:
   workflow_dispatch:
   schedule:
-    # 额外新增：每小时第 1 分钟更新一次（避开原来 10/12/18 点的整点任务）
-    - cron: '1 * * * *'
 
     # 保留原来的定时：中国时间 10:00 = UTC 02:00
     - cron: '0 2 * * *'
