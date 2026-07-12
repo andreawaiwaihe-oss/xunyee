@@ -3,8 +3,6 @@ name: Update Weibo Chaohua CSV
 on:
   workflow_dispatch:
   schedule:
-    # 新增：每小时第 10 分钟更新一次
-    - cron: '10 * * * *'
 
     # 新增：补一个中国时间 23:59 的最后更新 = UTC 15:59
     - cron: '59 15 * * *'
