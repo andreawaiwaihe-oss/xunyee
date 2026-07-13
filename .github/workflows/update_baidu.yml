@@ -47,7 +47,7 @@ jobs:
 
       - name: Run Baidu flower script
         run: |
-          python 你的百度脚本文件名.py
+          python baidu_folwer_data.py
 
       - name: Commit updated CSV
         run: |
