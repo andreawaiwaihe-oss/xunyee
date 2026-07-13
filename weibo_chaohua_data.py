@@ -36,6 +36,14 @@ AID = os.getenv("WEIBO_AID", "").strip()
 X_SESSIONID = os.getenv("WEIBO_X_SESSIONID", "").strip()
 X_VALIDATOR = os.getenv("WEIBO_X_VALIDATOR", "").strip()
 X_SHANHAI_PASS = os.getenv("WEIBO_X_SHANHAI_PASS", "").strip()
+WEIBO_USER_AGENT = os.getenv("WEIBO_USER_AGENT", "").strip()
+WEIBO_X_LOG_UID = os.getenv("WEIBO_X_LOG_UID", "").strip()
+WEIBO_FROM = os.getenv("WEIBO_FROM", "").strip()
+WEIBO_S = os.getenv("WEIBO_S", "").strip()
+WEIBO_UA = os.getenv("WEIBO_UA", "").strip()
+WEIBO_UL_SID = os.getenv("WEIBO_UL_SID", "").strip()
+WEIBO_UL_HID = os.getenv("WEIBO_UL_HID", "").strip()
+WEIBO_UL_CTIME = os.getenv("WEIBO_UL_CTIME", "").strip()
 
 missing_secrets = [
     name for name, value in {
@@ -45,6 +53,13 @@ missing_secrets = [
         "WEIBO_X_SESSIONID": X_SESSIONID,
         "WEIBO_X_VALIDATOR": X_VALIDATOR,
         "WEIBO_X_SHANHAI_PASS": X_SHANHAI_PASS,
+        "WEIBO_X_LOG_UID": WEIBO_X_LOG_UID,
+        "WEIBO_FROM": WEIBO_FROM,
+        "WEIBO_S": WEIBO_S,
+        "WEIBO_UA": WEIBO_UA,
+        "WEIBO_UL_SID": WEIBO_UL_SID,
+        "WEIBO_UL_HID": WEIBO_UL_HID,
+        "WEIBO_UL_CTIME": WEIBO_UL_CTIME,
     }.items()
     if not value
 ]
@@ -73,8 +88,8 @@ COMMON_HEADERS = {
     "x-sessionid": X_SESSIONID,
     "x-engine-type": "cronet-114.0.5735.246",
     "x-shanhai-pass": X_SHANHAI_PASS,
-   "user-agent": "Weibo/100366 (iPhone; iOS 26.5; Scale/3.00)",
-    "x-log-uid": "2711687981",
+    "user-agent": WEIBO_USER_AGENT,
+    "x-log-uid": WEIBO_X_LOG_UID,
     "x-validator": X_VALIDATOR,
     "x-log-level": "sla",
     "accept": "*/*",
@@ -91,22 +106,22 @@ BASE_PARAMS = {
     "b": "0",
     "c": "iphone",
     "dlang": "zh-Hans-CA",
-    "from": "10G7093010",
+    "from": WEIBO_FROM,
     "ft": "0",
     "gsid": GSID,
     "lang": "zh_CN",
     "launchid": "10000365--x",
     "networktype": "wifi",
-    "s": "f0a2e97b",
+    "s": WEIBO_S,
     "sflag": "1",
     "skin": "default",
-    "ua": "iPhone16,2__weibo__16.7.0__iphone__os26.5",
+    "ua": WEIBO_UA,
     "v_f": "1",
     "v_p": "93",
     "wm": "3333_2001",
-    "ul_sid": "0078BAB7-654B-4F90-B829-BA6370A31F42",
-    "ul_hid": "F8688E6E-84BF-4A85-955F-717A88F3310A",
-    "ul_ctime": "1783327693250",
+    "ul_sid": WEIBO_UL_SID,
+    "ul_hid": WEIBO_UL_HID,
+    "ul_ctime": WEIBO_UL_CTIME,
 }
 
 
