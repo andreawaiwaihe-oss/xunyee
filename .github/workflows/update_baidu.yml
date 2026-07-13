@@ -28,6 +28,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -36,26 +38,30 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+            pip install -r requirements.txt
+
+# 先同步远程仓库，再运行脚本
+      - name: Sync latest repository
+        run: |
+          git pull --rebase origin main
 
       - name: Run Baidu flower script
-        env:
-          BAIDU_COOKIE: ${{ secrets.BAIDU_COOKIE }}
         run: |
-          python baidu_flower_data.py
+          python 你的百度脚本文件名.py
 
       - name: Commit updated CSV
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
 
-          git add baidu_send_flower_data.csv baidu_send_flower_data_history.csv
+          git add baidu_send_flower_data.csv
+          git add baidu_send_flower_data_history.csv
 
           if git diff --cached --quiet; then
-            echo "No CSV changes to commit."
-          else
-            git commit -m "Auto update Baidu flower CSV"
-            git pull --rebase origin main
-            git push origin main
+            echo "No changes to commit"
+            exit 0
+          fi
+
+          git commit -m "Auto update Baidu flower CSV"
+          git push origin main
           fi
