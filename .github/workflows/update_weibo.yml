@@ -40,6 +40,15 @@ jobs:
           WEIBO_X_SESSIONID: ${{ secrets.WEIBO_X_SESSIONID }}
           WEIBO_X_VALIDATOR: ${{ secrets.WEIBO_X_VALIDATOR }}
           WEIBO_X_SHANHAI_PASS: ${{ secrets.WEIBO_X_SHANHAI_PASS }}
+          
+          WEIBO_USER_AGENT: ${{ secrets.WEIBO_USER_AGENT }}
+          WEIBO_X_LOG_UID: ${{ secrets.WEIBO_X_LOG_UID }}
+          WEIBO_FROM: ${{ secrets.WEIBO_FROM }}
+          WEIBO_S: ${{ secrets.WEIBO_S }}
+          WEIBO_UA: ${{ secrets.WEIBO_UA }}
+          WEIBO_UL_SID: ${{ secrets.WEIBO_UL_SID }}
+          WEIBO_UL_HID: ${{ secrets.WEIBO_UL_HID }}
+          WEIBO_UL_CTIME: ${{ secrets.WEIBO_UL_CTIME }}
         run: |
           python weibo_chaohua_data.py
 
