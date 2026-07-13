@@ -66,4 +66,4 @@ jobs:
 
           git commit -m "Auto update Baidu flower CSV"
           git push origin main
-          fi
+          
