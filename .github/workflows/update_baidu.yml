@@ -46,6 +46,8 @@ jobs:
           git pull --rebase origin main
 
       - name: Run Baidu flower script
+        env:
+            BAIDU_COOKIE: ${{ secrets.BAIDU_COOKIE }}
         run: |
           python baidu_flower_data.py
 
