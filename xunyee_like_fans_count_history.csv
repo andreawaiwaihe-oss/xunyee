@@ -6999,3 +6999,13 @@
 2026-07-19 19:12:24,8,陈思罕,2242,730,13486,147,23,683,
 2026-07-19 19:12:24,9,左奇函,2145,97,21567,128,23,657,
 2026-07-19 19:12:24,10,李煜东,1095,1050,16797,63,7,338,
+2026-07-19 23:48:29,1,王橹杰,,,,,,,"HTTPSConnectionPool(host='api.xunyee.cn', port=443): Read timed out. (read timeout=15)"
+2026-07-19 23:48:29,2,杨博文,,,,,,,"HTTPSConnectionPool(host='api.xunyee.cn', port=443): Read timed out. (read timeout=15)"
+2026-07-19 23:48:29,3,左奇函,,,,,,,"HTTPSConnectionPool(host='api.xunyee.cn', port=443): Read timed out. (read timeout=15)"
+2026-07-19 23:48:29,4,陈浚铭,,,,,,,"HTTPSConnectionPool(host='api.xunyee.cn', port=443): Read timed out. (read timeout=15)"
+2026-07-19 23:48:29,5,张桂源,,,,,,,"HTTPSConnectionPool(host='api.xunyee.cn', port=443): Read timed out. (read timeout=15)"
+2026-07-19 23:48:29,6,张函瑞,,,,,,,"HTTPSConnectionPool(host='api.xunyee.cn', port=443): Read timed out. (read timeout=15)"
+2026-07-19 23:48:29,7,张奕然,,,,,,,"HTTPSConnectionPool(host='api.xunyee.cn', port=443): Read timed out. (read timeout=15)"
+2026-07-19 23:48:29,8,李煜东,,,,,,,"HTTPSConnectionPool(host='api.xunyee.cn', port=443): Read timed out. (read timeout=15)"
+2026-07-19 23:48:29,9,陈思罕,,,,,,,"HTTPSConnectionPool(host='api.xunyee.cn', port=443): Read timed out. (read timeout=15)"
+2026-07-19 23:48:29,10,陈奕恒,,,,,,,"HTTPSConnectionPool(host='api.xunyee.cn', port=443): Read timed out. (read timeout=15)"
